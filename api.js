@@ -64,23 +64,29 @@ module.exports = {
     },
 
     createPosts(data, next) {
+        var today = new Date();
+        var longAgo = new Date(today.getFullYear(), today.getFullMonth(), today.getDate()-7);
         _.forEach(data, (post) => {
-            this.parsedData.posts.push({
-                url: `https://www.instagram.com/p/${post.code}`,
-                urlImage: post.display_src,
-                width: post.dimensions.width,
-                height: post.dimensions.height,
-                numberLikes: post.likes.count,
-                numberComments: post.comments.count,
-                isVideo: post.is_video,
-                multipleImage: false,
-                tags: utils.getTags(post.caption),
-                mentions: utils.getMentions(post.caption),
-                description: post.caption,
-                date: utils.getDate(post.date),
-            });
-        });
-        next(this);
+            if (utils.getDate(post.date) < longAgo) {
+                this.createFile();
+            } else {
+                this.parsedData.posts.push({
+                    url: `https://www.instagram.com/p/${post.code}`,
+                    urlImage: post.display_src,
+                    width: post.dimensions.width,
+                    height: post.dimensions.height,
+                    numberLikes: post.likes.count,
+                    numberComments: post.comments.count,
+                    isVideo: post.is_video,
+                    multipleImage: false,
+                    tags: utils.getTags(post.caption),
+                    mentions: utils.getMentions(post.caption),
+                    description: post.caption,
+                    date: utils.getDate(post.date),
+                });
+                next(this);
+            }
+	});
     },
 
     createFile() {
