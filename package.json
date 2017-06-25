@@ -5,12 +5,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/nacimgoura/instagram-profilecrawl.git"
+    "url": "https://github.com/cfoster0/instagram-profilecrawl.git"
   },
   "author": {
-    "name": "Nacim Goura",
-    "email": "nacim.goura.dev@gmail.com",
-    "url": "nacimgoura.xyz"
+    "name": "Charles Foster",
+    "email": "cfoster0m@gmail.com"
   },
   "engines": {
     "node": ">=6"

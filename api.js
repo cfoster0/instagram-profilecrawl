@@ -65,7 +65,7 @@ module.exports = {
 
     createPosts(data, next) {
         var today = new Date();
-        var longAgo = new Date(today.getFullYear(), today.getFullMonth(), today.getDate()-7);
+        var longAgo = new Date(today.getFullYear(), today.getMonth(), today.getDate()-7);
         _.forEach(data, (post) => {
             if (utils.getDate(post.date) < longAgo) {
                 this.createFile();
