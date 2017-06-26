@@ -44,6 +44,7 @@ module.exports = {
                 self.createFile();
             } else {
                 setTimeout(() => {
+		    //console.log(`https://instagram.com/${profileName}/?__a=1&max_id=${idNextPage}`);
                     got(`https://instagram.com/${profileName}/?__a=1&max_id=${idNextPage}`, { json: true })
                         .then((request) => {
                             const newData = request.body;
@@ -66,10 +67,12 @@ module.exports = {
     createPosts(data, next) {
         var today = new Date();
         var longAgo = new Date(today.getFullYear(), today.getMonth(), today.getDate()-7);
-        _.forEach(data, (post) => {
-            if (utils.getDate(post.date) < longAgo) {
-                this.createFile();
-                return;
+	var finished = false;	
+	_.every(data, (post) => {
+	    if (utils.getDate(post.date) < longAgo) {
+	        this.createFile();
+		finished = true;
+		return false;
             } else {
                 this.parsedData.posts.push({
                     url: `https://www.instagram.com/p/${post.code}`,
@@ -85,9 +88,12 @@ module.exports = {
                     description: post.caption,
                     date: utils.getDate(post.date),
                 });
-                next(this);
+		return true;
             }
 	});
+    	if (!finished) {
+	    next(this);
+    	}
     },
 
     createFile() {
