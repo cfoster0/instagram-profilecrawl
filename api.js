@@ -69,6 +69,7 @@ module.exports = {
         _.forEach(data, (post) => {
             if (utils.getDate(post.date) < longAgo) {
                 this.createFile();
+                return;
             } else {
                 this.parsedData.posts.push({
                     url: `https://www.instagram.com/p/${post.code}`,
