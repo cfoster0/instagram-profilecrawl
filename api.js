@@ -14,6 +14,9 @@ module.exports = {
         got(`https://instagram.com/${profileName}/?__a=1`, { json: true })
             .then((data) => {
                 this.writeData(profileName, data.body);
+            })
+            .catch(error => {
+                spinnerApi.fail(chalk.red(`Error : Cannot read profile of ${profileName}`));
             });
     },
 
@@ -63,7 +66,7 @@ module.exports = {
 
     createPosts(data, next) {
         var today = new Date();
-        var longAgo = new Date(today.getFullYear(), today.getMonth(), today.getDate()-2);
+        var longAgo = new Date(today.getFullYear(), today.getMonth(), today.getDate()-7);
     	var finished = false;	
     	_.every(data, (post) => {
     	    if (utils.getDate(post.date) < longAgo) {
