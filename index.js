@@ -4,42 +4,25 @@ const ora = require('ora');
 const chalk = require('chalk');
 const meow = require('meow');
 const inquirer = require('inquirer');
-const api = require('./api');
+api = require('./api');
 const crawl = require('./crawl');
 
 const cli = meow(`
     Usage
-	  $ instagram-profilecrawl <name> <name>
+	  $ instagram-profilecrawl <name>
 
 	Examples
-	  $ instagram-profilecrawl nacimgoura emmawatson
+	  $ instagram-profilecrawl nacimgoura
 `);
 
 // init spinner
 const spinnerLoading = ora(chalk.blue('Init script!'));
 
 // test if name is entered
-const listProfileName = cli.input;
-if (!listProfileName.length) {
+const profileName = cli.input;
+if (!profileName.length) {
     spinnerLoading.fail(chalk.red('No name entered!'));
     process.exit();
 }
 
-const prompt = {
-    type: 'list',
-    message: 'Choose your method for crawl.',
-    name: 'typecrawl',
-    choices: [
-        'API Instagram (the faster)',
-        'Selenium with chromedriver (the best pedagogical)',
-    ],
-};
-inquirer.prompt(prompt).then((answers) => {
-    if (answers.typecrawl === 'API Instagram (the faster)') {
-        api.start(listProfileName);
-    } else if (answers.typecrawl === 'Selenium with chromedriver (the best pedagogical)') {
-        crawl.start(listProfileName);
-    } else {
-        spinnerLoading.fail(chalk.red('Choice not existing!!'));
-    }
-});
+api.start(profileName);

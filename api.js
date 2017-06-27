@@ -5,18 +5,16 @@ const chalk = require('chalk');
 const _ = require('lodash');
 const utils = require('./utils');
 
-const spinnerApi = ora('Init Api!');
+const spinnerApi = ora('Working some HTTPS magic...');
 
 module.exports = {
 
-    start(listProfileName) {
+    start(profileName) {
         spinnerApi.start();
-        _.forEach(listProfileName, (profileName) => {
-            got(`https://instagram.com/${profileName}/?__a=1`, { json: true })
-                .then((data) => {
-                    this.writeData(profileName, data.body);
-                });
-        });
+        got(`https://instagram.com/${profileName}/?__a=1`, { json: true })
+            .then((data) => {
+                this.writeData(profileName, data.body);
+            });
     },
 
     writeData(profileName, data) {
@@ -44,7 +42,6 @@ module.exports = {
                 self.createFile();
             } else {
                 setTimeout(() => {
-		    //console.log(`https://instagram.com/${profileName}/?__a=1&max_id=${idNextPage}`);
                     got(`https://instagram.com/${profileName}/?__a=1&max_id=${idNextPage}`, { json: true })
                         .then((request) => {
                             const newData = request.body;
@@ -66,33 +63,33 @@ module.exports = {
 
     createPosts(data, next) {
         var today = new Date();
-        var longAgo = new Date(today.getFullYear(), today.getMonth(), today.getDate()-7);
-	var finished = false;	
-	_.every(data, (post) => {
-	    if (utils.getDate(post.date) < longAgo) {
-	        this.createFile();
-		finished = true;
-		return false;
-            } else {
-                this.parsedData.posts.push({
-                    url: `https://www.instagram.com/p/${post.code}`,
-                    urlImage: post.display_src,
-                    width: post.dimensions.width,
-                    height: post.dimensions.height,
-                    numberLikes: post.likes.count,
-                    numberComments: post.comments.count,
-                    isVideo: post.is_video,
-                    multipleImage: false,
-                    tags: utils.getTags(post.caption),
-                    mentions: utils.getMentions(post.caption),
-                    description: post.caption,
-                    date: utils.getDate(post.date),
-                });
-		return true;
-            }
-	});
+        var longAgo = new Date(today.getFullYear(), today.getMonth(), today.getDate()-2);
+    	var finished = false;	
+    	_.every(data, (post) => {
+    	    if (utils.getDate(post.date) < longAgo) {
+    	        this.createFile();
+    		finished = true;
+    		return false;
+                } else {
+                    this.parsedData.posts.push({
+                        url: `https://www.instagram.com/p/${post.code}`,
+                        urlImage: post.display_src,
+                        width: post.dimensions.width,
+                        height: post.dimensions.height,
+                        numberLikes: post.likes.count,
+                        numberComments: post.comments.count,
+                        isVideo: post.is_video,
+                        multipleImage: false,
+                        tags: utils.getTags(post.caption),
+                        mentions: utils.getMentions(post.caption),
+                        description: post.caption,
+                        date: utils.getDate(post.date),
+                    });
+    		return true;
+                }
+    	});
     	if (!finished) {
-	    next(this);
+	       next(this);
     	}
     },
 
